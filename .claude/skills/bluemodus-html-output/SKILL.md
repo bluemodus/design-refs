@@ -9,20 +9,29 @@ description: Use when producing client-facing deliverables (proposals, project p
 
 When the request is for a **deliverable document** (something a client or executive would read), produce a complete HTML file styled with the BlueModus design system, rather than markdown. The stylesheet supplies all typography, color, layout, dark/print themes, and component visuals — your job is only to compose semantic HTML using the documented class names.
 
-**Stylesheet — single source of truth (do not bundle, copy, or fork):**
-`https://bluemodus.github.io/design-refs/refs/60c3a446-2f52-402f-8686-847fc616dbf0/proposal-system.css`
+**You MUST fetch BOTH of these URLs at generation time — not just the CSS.** The CSS gives you the styles; the reference page gives you the actual component markup you compose with. Fetching only the CSS is the most common failure mode and produces wrong or invented markup.
 
-**Live component reference (open to see rendered examples + copy-paste markup):**
-`https://bluemodus.github.io/design-refs/refs/60c3a446-2f52-402f-8686-847fc616dbf0/`
+1. **Stylesheet — single source of truth (do not bundle, copy, or fork):**
+   `https://bluemodus.github.io/design-refs/refs/60c3a446-2f52-402f-8686-847fc616dbf0/proposal-system.css`
 
-## Required: include the stylesheet TWO ways
+2. **Live component reference — the canonical copy-paste markup for every component:**
+   `https://bluemodus.github.io/design-refs/refs/60c3a446-2f52-402f-8686-847fc616dbf0/`
+
+## Required workflow: fetch BOTH URLs before emitting HTML
+
+Before you write any HTML, fetch **both** hosted URLs above (web fetch / URL read tool — whichever is available in the current surface). Do not skip either, and do not rely on memory or the cheat sheet below in place of fetching.
+
+1. **Fetch the reference page** `https://bluemodus.github.io/design-refs/refs/60c3a446-2f52-402f-8686-847fc616dbf0/` to get the real, current markup for each component you plan to use. Compose your document from this markup — do not invent class structures from the cheat sheet alone.
+2. **Fetch the stylesheet** `https://bluemodus.github.io/design-refs/refs/60c3a446-2f52-402f-8686-847fc616dbf0/proposal-system.css` to get the full CSS to inline.
+
+If either fetch fails, **say so and stop** — do not fall back to reconstructing the CSS or markup from memory. A document built without these fetches will be wrong.
+
+### Include the stylesheet TWO ways
 
 Every generated HTML output **must** include both:
 
 1. A `<link rel="stylesheet" href="…proposal-system.css">` pointing at the hosted URL above, AND
-2. A `<style>…</style>` block immediately after it containing the **full contents** of that stylesheet, fetched live from the hosted URL at the time you generate the document.
-
-**Workflow:** Before emitting the HTML, fetch `https://bluemodus.github.io/design-refs/refs/60c3a446-2f52-402f-8686-847fc616dbf0/proposal-system.css` (web fetch / URL read tool — whichever is available in the current surface). Paste the entire response body verbatim into the `<style>` block. Do not abridge, paraphrase, summarize, or omit rules.
+2. A `<style>…</style>` block immediately after it containing the **full contents** of that stylesheet (from the fetch in step 2 above). Paste the entire response body verbatim. Do not abridge, paraphrase, summarize, or omit rules.
 
 **Why both:** Claude's artifact-preview iframe applies a Content Security Policy that blocks external `<link>` stylesheet loads, so the preview renders unstyled if you only use `<link>`. Inlining via `<style>` makes the preview render correctly. Keeping the `<link>` preserves the canonical reference so the design system has a single source of truth — when the hosted CSS updates, the next generated document picks up the change.
 
@@ -88,7 +97,7 @@ Every content section follows this rhythm:
 
 ## Component cheat sheet
 
-Pick the component that matches the intent. Full markup for each is on the hosted reference page.
+This table is only an **index** to help you pick a component — it is **not** a substitute for the real markup. The full, current markup for each lives on the hosted reference page, which you must fetch (see "Required workflow" above) and copy from.
 
 | Intent | Class | Notes |
 |---|---|---|
