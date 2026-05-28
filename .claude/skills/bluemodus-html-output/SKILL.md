@@ -7,13 +7,26 @@ description: Use when producing client-facing deliverables (proposals, project p
 
 ## Overview
 
-When the request is for a **deliverable document** (something a client or executive would read), produce a complete HTML file that links the hosted BlueModus design system stylesheet, rather than markdown. The stylesheet supplies all typography, color, layout, dark/print themes, and component visuals — your job is only to compose semantic HTML using the documented class names.
+When the request is for a **deliverable document** (something a client or executive would read), produce a complete HTML file styled with the BlueModus design system, rather than markdown. The stylesheet supplies all typography, color, layout, dark/print themes, and component visuals — your job is only to compose semantic HTML using the documented class names.
 
-**Stylesheet (link directly, do not inline):**
+**Stylesheet — single source of truth (do not bundle, copy, or fork):**
 `https://bluemodus.github.io/design-refs/refs/60c3a446-2f52-402f-8686-847fc616dbf0/proposal-system.css`
 
 **Live component reference (open to see rendered examples + copy-paste markup):**
 `https://bluemodus.github.io/design-refs/refs/60c3a446-2f52-402f-8686-847fc616dbf0/`
+
+## Required: include the stylesheet TWO ways
+
+Every generated HTML output **must** include both:
+
+1. A `<link rel="stylesheet" href="…proposal-system.css">` pointing at the hosted URL above, AND
+2. A `<style>…</style>` block immediately after it containing the **full contents** of that stylesheet, fetched live from the hosted URL at the time you generate the document.
+
+**Workflow:** Before emitting the HTML, fetch `https://bluemodus.github.io/design-refs/refs/60c3a446-2f52-402f-8686-847fc616dbf0/proposal-system.css` (web fetch / URL read tool — whichever is available in the current surface). Paste the entire response body verbatim into the `<style>` block. Do not abridge, paraphrase, summarize, or omit rules.
+
+**Why both:** Claude's artifact-preview iframe applies a Content Security Policy that blocks external `<link>` stylesheet loads, so the preview renders unstyled if you only use `<link>`. Inlining via `<style>` makes the preview render correctly. Keeping the `<link>` preserves the canonical reference so the design system has a single source of truth — when the hosted CSS updates, the next generated document picks up the change.
+
+**Never** emit a document with only the `<link>` and no inlined `<style>` — the preview iframe will render unstyled and the user will see a broken document. **Never** bundle, cache, or fork the CSS into the skill directory or another local file — always pull from the hosted URL at generation time.
 
 ## When to use
 
@@ -44,6 +57,11 @@ Every output is a single self-contained `.html` file with this shell. Do not cop
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://bluemodus.github.io/design-refs/refs/60c3a446-2f52-402f-8686-847fc616dbf0/proposal-system.css">
+<style>
+  /* ===== Inlined for artifact-preview rendering (CSP blocks the <link> above). ===== */
+  /* Fetch the hosted proposal-system.css URL and paste its FULL contents here verbatim. */
+  /* Do not paraphrase, abridge, or "summarize" — emit the entire file. */
+</style>
 </head>
 <body>
 <main>
